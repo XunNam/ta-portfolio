@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@layer base {
+    body {
+        @apply bg-[#f8fafc] text-[#121729]
+    }
+}
+
+@theme {
+    --font-space-gortesk: var('--font-space-gortesk');
+    --font-inter: var("--font-inter");
+}
