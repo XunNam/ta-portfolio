@@ -1,59 +1,34 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
-import { getPayload } from 'payload'
-import React from 'react'
-import { fileURLToPath } from 'url'
+import type { Metadata } from 'next'
 
-import config from '@/payload.config'
-import './styles.css'
+import { PortfolioPage } from '@/components/portfolio/PortfolioPage'
+import { getPortfolioPageData } from '@/lib/portfolio/data'
+import { getMediaURL } from '@/lib/portfolio/media'
+
+export const dynamic = 'force-dynamic'
+
+export const generateMetadata = async (): Promise<Metadata> => {
+  const { siteSettings } = await getPortfolioPageData()
+  const siteURL = process.env.NEXT_PUBLIC_SITE_URL
+  const metaImage = getMediaURL(siteSettings.meta?.metaImage)
+  const keywords = siteSettings.meta?.metaKeywords?.map((keyword) => keyword.keyword).filter(Boolean)
+
+  return {
+    alternates: siteSettings.meta?.canonicalUrl ? { canonical: siteSettings.meta.canonicalUrl } : undefined,
+    description: siteSettings.meta?.metaDescription || undefined,
+    keywords: keywords?.length ? keywords : undefined,
+    metadataBase: siteURL ? new URL(siteURL) : undefined,
+    openGraph: {
+      description: siteSettings.meta?.metaDescription || undefined,
+      images: metaImage ? [metaImage] : undefined,
+      title: siteSettings.meta?.metaTitle || siteSettings.siteName,
+    },
+    robots: siteSettings.meta?.robots || undefined,
+    title: siteSettings.meta?.metaTitle || siteSettings.siteName,
+  }
+}
 
 export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
+  const data = await getPortfolioPageData()
 
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
-
-  return (
-    <div className="home">
-      <div className="content">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
-          <a
-            className="admin"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Go to admin panel
-          </a>
-          <a
-            className="docs"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
-          </a>
-        </div>
-      </div>
-      <div className="footer">
-        <p>Update this page by editing</p>
-        <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
-        </a>
-      </div>
-    </div>
-  )
+  return <PortfolioPage {...data} />
 }

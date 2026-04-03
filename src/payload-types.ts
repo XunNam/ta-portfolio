@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    projects: Project;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +79,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,8 +89,14 @@ export interface Config {
     defaultIDType: string;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    siteSettings: SiteSetting;
+    homePage: HomePage;
+  };
+  globalsSelect: {
+    siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    homePage: HomePageSelect<false> | HomePageSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -123,6 +131,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
+  roles: ('admin' | 'editor')[];
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -149,6 +158,7 @@ export interface User {
 export interface Media {
   id: string;
   alt: string;
+  caption?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -160,6 +170,73 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: string;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  fullDescription?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  visualType: 'image' | 'namedIcon' | 'svg';
+  previewImage?: (string | null) | Media;
+  iconName?:
+    | (
+        | 'badge'
+        | 'briefcase'
+        | 'code'
+        | 'cpu'
+        | 'external-link'
+        | 'folder'
+        | 'github'
+        | 'globe'
+        | 'image'
+        | 'layout'
+        | 'link'
+        | 'mail'
+        | 'monitor'
+        | 'send'
+        | 'smartphone'
+        | 'sparkles'
+        | 'star'
+        | 'users'
+      )
+    | null;
+  /**
+   * SVG is sanitized before save. Unsafe markup will be stripped.
+   */
+  svgCode?: string | null;
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  sortOrder?: number | null;
+  featured?: boolean | null;
+  status: 'draft' | 'published';
+  buttonLabel?: string | null;
+  buttonUrl?: string | null;
+  openInNewTab?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -192,6 +269,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: string | Project;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -240,6 +321,7 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -263,6 +345,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  caption?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -274,6 +357,34 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  shortDescription?: T;
+  fullDescription?: T;
+  visualType?: T;
+  previewImage?: T;
+  iconName?: T;
+  svgCode?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  sortOrder?: T;
+  featured?: T;
+  status?: T;
+  buttonLabel?: T;
+  buttonUrl?: T;
+  openInNewTab?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -314,6 +425,538 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings".
+ */
+export interface SiteSetting {
+  id: string;
+  siteName: string;
+  brandText: string;
+  brandLogo?: (string | null) | Media;
+  meta?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    metaKeywords?:
+      | {
+          keyword: string;
+          id?: string | null;
+        }[]
+      | null;
+    metaImage?: (string | null) | Media;
+    canonicalUrl?: string | null;
+    robots?: string | null;
+  };
+  navbarLinks: {
+    label: string;
+    linkType: 'section' | 'custom' | 'email';
+    /**
+     * Use section links for one-page navigation targets.
+     */
+    sectionId?: ('top' | 'about' | 'skills' | 'projects' | 'contact') | null;
+    /**
+     * Use section links for one-page navigation targets.
+     */
+    url?: string | null;
+    emailAddress?: string | null;
+    openInNewTab?: boolean | null;
+    id?: string | null;
+  }[];
+  footer: {
+    links?:
+      | {
+          label: string;
+          linkType: 'section' | 'custom' | 'email';
+          /**
+           * Footer quick links can target sections, URLs, or email.
+           */
+          sectionId?: ('top' | 'about' | 'skills' | 'projects' | 'contact') | null;
+          /**
+           * Footer quick links can target sections, URLs, or email.
+           */
+          url?: string | null;
+          emailAddress?: string | null;
+          openInNewTab?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+    socialLinks?:
+      | {
+          label: string;
+          linkType: 'custom' | 'email';
+          url?: string | null;
+          emailAddress?: string | null;
+          openInNewTab?: boolean | null;
+          iconType: 'named' | 'svg' | 'image';
+          iconName?:
+            | (
+                | 'badge'
+                | 'briefcase'
+                | 'code'
+                | 'cpu'
+                | 'external-link'
+                | 'folder'
+                | 'github'
+                | 'globe'
+                | 'image'
+                | 'layout'
+                | 'link'
+                | 'mail'
+                | 'monitor'
+                | 'send'
+                | 'smartphone'
+                | 'sparkles'
+                | 'star'
+                | 'users'
+              )
+            | null;
+          /**
+           * SVG is sanitized before save. Unsafe markup will be stripped.
+           */
+          svgCode?: string | null;
+          iconImage?: (string | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+    noticeText?: string | null;
+    copyrightText: string;
+    showYear?: boolean | null;
+    useCurrentYear?: boolean | null;
+    customYear?: number | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homePage".
+ */
+export interface HomePage {
+  id: string;
+  hero: {
+    eyebrow?: string | null;
+    name: string;
+    roleTitle: string;
+    description: string;
+    avatar?: (string | null) | Media;
+    primaryCTA: {
+      label: string;
+      linkType: 'section' | 'custom' | 'email';
+      sectionId?: ('top' | 'about' | 'skills' | 'projects' | 'contact') | null;
+      url?: string | null;
+      emailAddress?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    secondaryCTA: {
+      label: string;
+      linkType: 'section' | 'custom' | 'email';
+      /**
+       * Leave the target empty to render an inactive CTA until the final destination is available.
+       */
+      sectionId?: ('top' | 'about' | 'skills' | 'projects' | 'contact') | null;
+      /**
+       * Leave the target empty to render an inactive CTA until the final destination is available.
+       */
+      url?: string | null;
+      emailAddress?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    socialLinks?:
+      | {
+          label: string;
+          linkType: 'custom' | 'email';
+          url?: string | null;
+          emailAddress?: string | null;
+          openInNewTab?: boolean | null;
+          iconType: 'named' | 'svg' | 'image';
+          iconName?:
+            | (
+                | 'badge'
+                | 'briefcase'
+                | 'code'
+                | 'cpu'
+                | 'external-link'
+                | 'folder'
+                | 'github'
+                | 'globe'
+                | 'image'
+                | 'layout'
+                | 'link'
+                | 'mail'
+                | 'monitor'
+                | 'send'
+                | 'smartphone'
+                | 'sparkles'
+                | 'star'
+                | 'users'
+              )
+            | null;
+          /**
+           * SVG is sanitized before save. Unsafe markup will be stripped.
+           */
+          svgCode?: string | null;
+          iconImage?: (string | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+    floatingBadge?: {
+      enabled?: boolean | null;
+      label?: string | null;
+      value?: string | null;
+      iconType?: ('named' | 'svg' | 'image') | null;
+      iconName?:
+        | (
+            | 'badge'
+            | 'briefcase'
+            | 'code'
+            | 'cpu'
+            | 'external-link'
+            | 'folder'
+            | 'github'
+            | 'globe'
+            | 'image'
+            | 'layout'
+            | 'link'
+            | 'mail'
+            | 'monitor'
+            | 'send'
+            | 'smartphone'
+            | 'sparkles'
+            | 'star'
+            | 'users'
+          )
+        | null;
+      /**
+       * SVG is sanitized before save. Unsafe markup will be stripped.
+       */
+      svgCode?: string | null;
+      iconImage?: (string | null) | Media;
+    };
+  };
+  about: {
+    sectionTitle: string;
+    sectionIntro?: string | null;
+    items: {
+      title: string;
+      description: string;
+      visualType: 'namedIcon' | 'svg' | 'image';
+      iconName?:
+        | (
+            | 'badge'
+            | 'briefcase'
+            | 'code'
+            | 'cpu'
+            | 'external-link'
+            | 'folder'
+            | 'github'
+            | 'globe'
+            | 'image'
+            | 'layout'
+            | 'link'
+            | 'mail'
+            | 'monitor'
+            | 'send'
+            | 'smartphone'
+            | 'sparkles'
+            | 'star'
+            | 'users'
+          )
+        | null;
+      /**
+       * SVG is sanitized before save. Unsafe markup will be stripped.
+       */
+      svgCode?: string | null;
+      image?: (string | null) | Media;
+      id?: string | null;
+    }[];
+  };
+  skills: {
+    sectionTitle: string;
+    sectionIntro?: string | null;
+    technicalSkills: {
+      name: string;
+      sortOrder?: number | null;
+      id?: string | null;
+    }[];
+    softSkills: {
+      label: string;
+      sortOrder?: number | null;
+      id?: string | null;
+    }[];
+    workPhilosophyTitle?: string | null;
+    workPhilosophyQuote?: string | null;
+  };
+  projectsSection: {
+    sectionTitle: string;
+    sectionIntro?: string | null;
+    viewAllLink: {
+      label: string;
+      linkType: 'section' | 'custom' | 'email';
+      /**
+       * Leave the target empty to hide the link in v1.
+       */
+      sectionId?: ('top' | 'about' | 'skills' | 'projects' | 'contact') | null;
+      /**
+       * Leave the target empty to hide the link in v1.
+       */
+      url?: string | null;
+      emailAddress?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    featuredOnly?: boolean | null;
+    limit?: number | null;
+  };
+  contact: {
+    sectionTitle: string;
+    description: string;
+    emailAddress: string;
+    primaryCTA: {
+      label: string;
+      linkType: 'section' | 'custom' | 'email';
+      sectionId?: ('top' | 'about' | 'skills' | 'projects' | 'contact') | null;
+      url?: string | null;
+      emailAddress?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    secondaryCTA: {
+      label: string;
+      linkType: 'section' | 'custom' | 'email';
+      /**
+       * Leave the target empty to render a copy-only button in v1.
+       */
+      sectionId?: ('top' | 'about' | 'skills' | 'projects' | 'contact') | null;
+      /**
+       * Leave the target empty to render a copy-only button in v1.
+       */
+      url?: string | null;
+      emailAddress?: string | null;
+      openInNewTab?: boolean | null;
+    };
+    copyValue?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  brandText?: T;
+  brandLogo?: T;
+  meta?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        metaKeywords?:
+          | T
+          | {
+              keyword?: T;
+              id?: T;
+            };
+        metaImage?: T;
+        canonicalUrl?: T;
+        robots?: T;
+      };
+  navbarLinks?:
+    | T
+    | {
+        label?: T;
+        linkType?: T;
+        sectionId?: T;
+        url?: T;
+        emailAddress?: T;
+        openInNewTab?: T;
+        id?: T;
+      };
+  footer?:
+    | T
+    | {
+        links?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              sectionId?: T;
+              url?: T;
+              emailAddress?: T;
+              openInNewTab?: T;
+              id?: T;
+            };
+        socialLinks?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              url?: T;
+              emailAddress?: T;
+              openInNewTab?: T;
+              iconType?: T;
+              iconName?: T;
+              svgCode?: T;
+              iconImage?: T;
+              id?: T;
+            };
+        noticeText?: T;
+        copyrightText?: T;
+        showYear?: T;
+        useCurrentYear?: T;
+        customYear?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homePage_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        name?: T;
+        roleTitle?: T;
+        description?: T;
+        avatar?: T;
+        primaryCTA?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              sectionId?: T;
+              url?: T;
+              emailAddress?: T;
+              openInNewTab?: T;
+            };
+        secondaryCTA?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              sectionId?: T;
+              url?: T;
+              emailAddress?: T;
+              openInNewTab?: T;
+            };
+        socialLinks?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              url?: T;
+              emailAddress?: T;
+              openInNewTab?: T;
+              iconType?: T;
+              iconName?: T;
+              svgCode?: T;
+              iconImage?: T;
+              id?: T;
+            };
+        floatingBadge?:
+          | T
+          | {
+              enabled?: T;
+              label?: T;
+              value?: T;
+              iconType?: T;
+              iconName?: T;
+              svgCode?: T;
+              iconImage?: T;
+            };
+      };
+  about?:
+    | T
+    | {
+        sectionTitle?: T;
+        sectionIntro?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              visualType?: T;
+              iconName?: T;
+              svgCode?: T;
+              image?: T;
+              id?: T;
+            };
+      };
+  skills?:
+    | T
+    | {
+        sectionTitle?: T;
+        sectionIntro?: T;
+        technicalSkills?:
+          | T
+          | {
+              name?: T;
+              sortOrder?: T;
+              id?: T;
+            };
+        softSkills?:
+          | T
+          | {
+              label?: T;
+              sortOrder?: T;
+              id?: T;
+            };
+        workPhilosophyTitle?: T;
+        workPhilosophyQuote?: T;
+      };
+  projectsSection?:
+    | T
+    | {
+        sectionTitle?: T;
+        sectionIntro?: T;
+        viewAllLink?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              sectionId?: T;
+              url?: T;
+              emailAddress?: T;
+              openInNewTab?: T;
+            };
+        featuredOnly?: T;
+        limit?: T;
+      };
+  contact?:
+    | T
+    | {
+        sectionTitle?: T;
+        description?: T;
+        emailAddress?: T;
+        primaryCTA?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              sectionId?: T;
+              url?: T;
+              emailAddress?: T;
+              openInNewTab?: T;
+            };
+        secondaryCTA?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              sectionId?: T;
+              url?: T;
+              emailAddress?: T;
+              openInNewTab?: T;
+            };
+        copyValue?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

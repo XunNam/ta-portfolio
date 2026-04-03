@@ -1,9 +1,15 @@
 import type { CollectionConfig } from 'payload'
 
+import { adminOnly } from '@/access/adminOnly'
+import { anyone } from '@/access/anyone'
+
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
-    read: () => true,
+    create: adminOnly,
+    delete: adminOnly,
+    read: anyone,
+    update: adminOnly,
   },
   fields: [
     {
@@ -11,6 +17,12 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'caption',
+      type: 'textarea',
+    },
   ],
-  upload: true,
+  upload: {
+    mimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/avif'],
+  },
 }
