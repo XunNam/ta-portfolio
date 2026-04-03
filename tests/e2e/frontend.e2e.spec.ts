@@ -17,11 +17,16 @@ test.describe('Frontend', () => {
 
     const heading = page.locator('h1').first()
     const nav = page.locator('nav')
+    const projectsHeading = page.getByRole('heading', { name: 'Dự án tiêu biểu' })
 
     await expect(heading).toHaveText('Bùi Thế Anh')
     await expect(nav).toContainText('Giới thiệu')
     await expect(nav).toContainText('Kỹ năng')
     await expect(nav).toContainText('Dự án')
     await expect(nav).toContainText('Liên hệ')
+    await expect(projectsHeading).toBeVisible()
+    await expect(page.getByText('E-Commerce Dashboard')).toBeVisible()
+    await expect(page.getByText('React').first()).toBeVisible()
+    await expect(page.getByText('Xem chi tiết').first()).toBeVisible()
   })
 })

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 
 import styles from './PortfolioNavbar.module.css'
 
@@ -20,6 +21,7 @@ type Props = {
 export const PortfolioNavbar = ({ brand, links }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 50)
@@ -54,26 +56,56 @@ export const PortfolioNavbar = ({ brand, links }: Props) => {
           onClick={() => setIsMenuOpen((current) => !current)}
           type="button"
         >
-          {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          <AnimatePresence initial={false} mode="wait">
+            <motion.span
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              initial={{ opacity: 0, rotate: isMenuOpen ? -42 : 42, scale: 0.88 }}
+              key={isMenuOpen ? 'close' : 'open'}
+              transition={{
+                duration: prefersReducedMotion ? 0.12 : 0.22,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+            </motion.span>
+          </AnimatePresence>
         </button>
       </div>
 
-      {isMenuOpen ? (
-        <div className={styles.mobilePanel}>
-          {links.map((link) => (
-            <a
-              key={`mobile-${link.label}-${link.href}`}
-              className={styles.mobileLink}
-              href={link.href}
-              onClick={closeMenu}
-              rel={link.rel}
-              target={link.target}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      ) : null}
+      <AnimatePresence initial={false}>
+        {isMenuOpen ? (
+          <motion.div
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className={styles.mobilePanel}
+            exit={{ opacity: 0, scale: 0.98, y: -12 }}
+            initial={{ opacity: 0, scale: 0.98, y: -16 }}
+            transition={{
+              duration: prefersReducedMotion ? 0.12 : 0.24,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            {links.map((link, index) => (
+              <motion.a
+                animate={{ opacity: 1, x: 0 }}
+                className={styles.mobileLink}
+                href={link.href}
+                initial={{ opacity: 0, x: -10 }}
+                key={`mobile-${link.label}-${link.href}`}
+                onClick={closeMenu}
+                rel={link.rel}
+                target={link.target}
+                transition={{
+                  delay: prefersReducedMotion ? 0 : 0.04 * index,
+                  duration: 0.2,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                {link.label}
+              </motion.a>
+            ))}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </nav>
   )
 }

@@ -179,6 +179,9 @@ export interface Project {
   id: string;
   title: string;
   slug: string;
+  /**
+   * Short description used on the homepage project card.
+   */
   shortDescription: string;
   fullDescription?: {
     root: {
@@ -196,6 +199,9 @@ export interface Project {
     [k: string]: unknown;
   } | null;
   visualType: 'image' | 'namedIcon' | 'svg';
+  /**
+   * Preview image used on the project card when the visual type is set to image.
+   */
   previewImage?: (string | null) | Media;
   iconName?:
     | (
@@ -223,18 +229,27 @@ export interface Project {
    * SVG is sanitized before save. Unsafe markup will be stripped.
    */
   svgCode?: string | null;
+  /**
+   * Add any number of technology, framework, or category tags for the card.
+   */
   tags?:
     | {
         tag: string;
         id?: string | null;
       }[]
     | null;
-  sortOrder?: number | null;
-  featured?: boolean | null;
-  status: 'draft' | 'published';
+  /**
+   * Optional. Frontend falls back to "Xem chi tiết" when left empty.
+   */
   buttonLabel?: string | null;
+  /**
+   * Optional. Leave empty to render a non-clickable CTA on the card.
+   */
   buttonUrl?: string | null;
   openInNewTab?: boolean | null;
+  featured?: boolean | null;
+  status: 'draft' | 'published';
+  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -377,12 +392,12 @@ export interface ProjectsSelect<T extends boolean = true> {
         tag?: T;
         id?: T;
       };
-  sortOrder?: T;
-  featured?: T;
-  status?: T;
   buttonLabel?: T;
   buttonUrl?: T;
   openInNewTab?: T;
+  featured?: T;
+  status?: T;
+  sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }

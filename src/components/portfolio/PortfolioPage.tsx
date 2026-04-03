@@ -6,6 +6,7 @@ import { getMediaURL } from '@/lib/portfolio/media'
 
 import { CMSLink } from './CMSLink'
 import { CopyButton } from './CopyButton'
+import { MotionReveal, MotionStagger, MotionStaggerItem } from './PortfolioMotion'
 import { NamedIcon } from './NamedIcon'
 import { PortfolioNavbar } from './PortfolioNavbar'
 import styles from './PortfolioPage.module.css'
@@ -144,49 +145,64 @@ export const PortfolioPage = ({ homePage, projects, siteSettings }: Props) => {
           <div className={styles.heroBlobSecondary} />
 
           <div className={styles.heroInner}>
-            <div className={styles.heroContent}>
-              {homePage.hero.eyebrow ? <div className={styles.heroEyebrow}>{homePage.hero.eyebrow}</div> : null}
-              <h1 className={styles.heroTitle}>{homePage.hero.name}</h1>
-              <p className={styles.heroRole}>{homePage.hero.roleTitle}</p>
-              <p className={styles.heroDescription}>{homePage.hero.description}</p>
+            <MotionStagger className={styles.heroContent} delayChildren={0.02} staggerChildren={0.09}>
+              {homePage.hero.eyebrow ? (
+                <MotionStaggerItem hover="none">
+                  <div className={styles.heroEyebrow}>{homePage.hero.eyebrow}</div>
+                </MotionStaggerItem>
+              ) : null}
+              <MotionStaggerItem hover="none">
+                <h1 className={styles.heroTitle}>{homePage.hero.name}</h1>
+              </MotionStaggerItem>
+              <MotionStaggerItem hover="none">
+                <p className={styles.heroRole}>{homePage.hero.roleTitle}</p>
+              </MotionStaggerItem>
+              <MotionStaggerItem hover="none">
+                <p className={styles.heroDescription}>{homePage.hero.description}</p>
+              </MotionStaggerItem>
 
-              <div className={styles.heroActions}>
-                <CMSLink className={styles.primaryButton} inactiveClassName={styles.inactiveButton} link={homePage.hero.primaryCTA}>
-                  {homePage.hero.primaryCTA?.label || 'Liên hệ ngay'}
-                </CMSLink>
-                <CMSLink className={styles.secondaryButton} inactiveClassName={styles.inactiveButton} link={homePage.hero.secondaryCTA}>
-                  <span className={styles.secondaryButtonContent}>
-                    <NamedIcon name="briefcase" size={16} />
-                    {homePage.hero.secondaryCTA?.label || 'Xem CV'}
-                  </span>
-                </CMSLink>
-              </div>
+              <MotionStaggerItem hover="none">
+                <div className={styles.heroActions}>
+                  <MotionStaggerItem hover="button" inline>
+                    <CMSLink className={styles.primaryButton} inactiveClassName={styles.inactiveButton} link={homePage.hero.primaryCTA}>
+                      {homePage.hero.primaryCTA?.label || 'Liên hệ ngay'}
+                    </CMSLink>
+                  </MotionStaggerItem>
+                  <MotionStaggerItem hover="button" inline>
+                    <CMSLink className={styles.secondaryButton} inactiveClassName={styles.inactiveButton} link={homePage.hero.secondaryCTA}>
+                      <span className={styles.secondaryButtonContent}>
+                        <NamedIcon name="briefcase" size={16} />
+                        {homePage.hero.secondaryCTA?.label || 'Xem CV'}
+                      </span>
+                    </CMSLink>
+                  </MotionStaggerItem>
+                </div>
+              </MotionStaggerItem>
 
               {homePage.hero.socialLinks?.length ? (
-                <div className={styles.socialLinks}>
-                  {homePage.hero.socialLinks.map((social, index) => (
-                    <CMSLink
-                      className={styles.socialLink}
-                      inactiveClassName={styles.socialLinkInactive}
-                      key={`${social.label || 'social'}-${index}`}
-                      link={social}
-                    >
-                      <VisualIcon
-                        className={styles.socialIcon}
-                        fallbackIcon="link"
-                        iconName={social.iconName}
-                        image={social.iconImage}
-                        label={social.label}
-                        svgCode={social.svgCode}
-                        type={social.iconType}
-                      />
-                    </CMSLink>
-                  ))}
-                </div>
+                <MotionStaggerItem hover="none">
+                  <div className={styles.socialLinks}>
+                    {homePage.hero.socialLinks.map((social, index) => (
+                      <MotionStaggerItem hover="chip" inline key={`${social.label || 'social'}-${index}`}>
+                        <CMSLink className={styles.socialLink} inactiveClassName={styles.socialLinkInactive} link={social}>
+                          <VisualIcon
+                            className={styles.socialIcon}
+                            fallbackIcon="link"
+                            iconName={social.iconName}
+                            image={social.iconImage}
+                            label={social.label}
+                            svgCode={social.svgCode}
+                            type={social.iconType}
+                          />
+                        </CMSLink>
+                      </MotionStaggerItem>
+                    ))}
+                  </div>
+                </MotionStaggerItem>
               ) : null}
-            </div>
+            </MotionStagger>
 
-            <div className={styles.heroVisual}>
+            <MotionReveal className={styles.heroVisual} delay={0.18} y={28}>
               <div className={styles.heroCard}>
                 <div className={styles.heroCardLayerA} />
                 <div className={styles.heroCardLayerB} />
@@ -201,7 +217,7 @@ export const PortfolioPage = ({ homePage, projects, siteSettings }: Props) => {
                 </div>
 
                 {showHeroBadge ? (
-                  <div className={styles.floatingBadge}>
+                  <MotionReveal className={styles.floatingBadge} delay={0.28} scale={0.96} y={18}>
                     <div className={styles.floatingBadgeIcon}>
                       <VisualIcon
                         className={styles.floatingBadgeSvg}
@@ -217,10 +233,10 @@ export const PortfolioPage = ({ homePage, projects, siteSettings }: Props) => {
                       <div className={styles.floatingBadgeLabel}>{heroBadge?.label}</div>
                       <div className={styles.floatingBadgeValue}>{heroBadge?.value}</div>
                     </div>
-                  </div>
+                  </MotionReveal>
                 ) : null}
               </div>
-            </div>
+            </MotionReveal>
           </div>
 
           <a className={styles.scrollCue} href="#about">
@@ -229,167 +245,188 @@ export const PortfolioPage = ({ homePage, projects, siteSettings }: Props) => {
         </section>
 
         <section className={styles.section} id="about">
-          <div className={styles.sectionHeading}>
-            <h2>{homePage.about.sectionTitle}</h2>
-            <div className={styles.sectionAccent} />
-            {homePage.about.sectionIntro ? <p>{homePage.about.sectionIntro}</p> : null}
-          </div>
+          <MotionReveal>
+            <div className={styles.sectionHeading}>
+              <h2>{homePage.about.sectionTitle}</h2>
+              <div className={styles.sectionAccent} />
+              {homePage.about.sectionIntro ? <p>{homePage.about.sectionIntro}</p> : null}
+            </div>
+          </MotionReveal>
 
-          <div className={styles.aboutGrid}>
+          <MotionStagger className={styles.aboutGrid}>
             {homePage.about.items.map((item, index) => (
-              <article className={styles.aboutCard} key={`${item.title}-${index}`}>
-                <div className={styles.aboutIconFrame}>
-                  <VisualIcon
-                    className={styles.aboutIcon}
-                    fallbackIcon="sparkles"
-                    iconName={item.iconName}
-                    image={item.image}
-                    imageClassName={styles.aboutImage}
-                    label={item.title}
-                    svgCode={item.svgCode}
-                    type={item.visualType}
-                  />
-                </div>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </article>
+              <MotionStaggerItem hover="card" key={`${item.title}-${index}`}>
+                <article className={styles.aboutCard}>
+                  <div className={styles.aboutIconFrame}>
+                    <VisualIcon
+                      className={styles.aboutIcon}
+                      fallbackIcon="sparkles"
+                      iconName={item.iconName}
+                      image={item.image}
+                      imageClassName={styles.aboutImage}
+                      label={item.title}
+                      svgCode={item.svgCode}
+                      type={item.visualType}
+                    />
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </article>
+              </MotionStaggerItem>
             ))}
-          </div>
+          </MotionStagger>
         </section>
 
         <section className={`${styles.section} ${styles.skillsSection}`} id="skills">
-          <div className={styles.sectionHeading}>
-            <h2>{homePage.skills.sectionTitle}</h2>
-            {homePage.skills.sectionIntro ? <p>{homePage.skills.sectionIntro}</p> : null}
-          </div>
+          <MotionReveal className={styles.skillsShell} y={30}>
+            <div className={`${styles.sectionHeading} ${styles.skillsHeading}`}>
+              <h2>{homePage.skills.sectionTitle}</h2>
+              <div className={styles.sectionAccent} />
+              {homePage.skills.sectionIntro ? <p>{homePage.skills.sectionIntro}</p> : null}
+            </div>
 
-          <div className={styles.skillsPanel}>
-            <div className={styles.skillsColumn}>
-              <h3 className={styles.panelTitle}>
-                <NamedIcon className={styles.inlineIcon} name="code" size={22} />
-                Technical Skills
-              </h3>
-              <div className={styles.skillList}>
-                {technicalSkills.map((skill) => (
-                  <div className={styles.skillRow} key={skill.name}>
-                    <span>{skill.name}</span>
-                    <div className={styles.skillPill}>Core</div>
-                  </div>
-                ))}
+            <div className={styles.skillsPanel}>
+              <div className={`${styles.skillsColumn} ${styles.skillsTechnicalColumn}`}>
+                <h3 className={styles.panelTitle}>
+                  <NamedIcon className={styles.inlineIcon} name="code" size={22} />
+                  Technical Skills
+                </h3>
+                <MotionStagger className={styles.skillList} delayChildren={0.03} staggerChildren={0.07}>
+                  {technicalSkills.map((skill) => (
+                    <MotionStaggerItem hover="chip" key={skill.name}>
+                      <div className={styles.skillRow}>
+                        <span>{skill.name}</span>
+                        <div className={styles.skillPill}>Core</div>
+                      </div>
+                    </MotionStaggerItem>
+                  ))}
+                </MotionStagger>
+              </div>
+
+              <div className={`${styles.skillsColumn} ${styles.skillsSoftColumn}`}>
+                <h3 className={styles.panelTitle}>
+                  <NamedIcon className={styles.inlineIcon} name="briefcase" size={22} />
+                  Soft Skills
+                </h3>
+                <MotionStagger className={styles.softSkillList} delayChildren={0.04} staggerChildren={0.06}>
+                  {softSkills.map((skill) => (
+                    <MotionStaggerItem hover="chip" inline key={skill.label}>
+                      <span className={styles.softSkillChip}>{skill.label}</span>
+                    </MotionStaggerItem>
+                  ))}
+                </MotionStagger>
               </div>
             </div>
 
-            <div className={styles.skillsColumn}>
-              <h3 className={styles.panelTitle}>
-                <NamedIcon className={styles.inlineIcon} name="briefcase" size={22} />
-                Soft Skills
-              </h3>
-              <div className={styles.softSkillList}>
-                {softSkills.map((skill) => (
-                  <span className={styles.softSkillChip} key={skill.label}>
-                    {skill.label}
-                  </span>
-                ))}
-              </div>
-
-              {homePage.skills.workPhilosophyQuote ? (
+            {homePage.skills.workPhilosophyQuote ? (
+              <MotionReveal className={styles.philosophyBand} delay={0.12} scale={0.992} y={16}>
                 <div className={styles.philosophyCard}>
+                  <div className={styles.philosophyLabel}>Work Philosophy</div>
                   <h4>{homePage.skills.workPhilosophyTitle || 'Phương châm làm việc'}</h4>
                   <p>{homePage.skills.workPhilosophyQuote}</p>
                 </div>
-              ) : null}
-            </div>
-          </div>
+              </MotionReveal>
+            ) : null}
+          </MotionReveal>
         </section>
 
         <section className={styles.section} id="projects">
-          <div className={styles.projectsHeader}>
-            <div>
-              <h2>{homePage.projectsSection.sectionTitle}</h2>
-              {homePage.projectsSection.sectionIntro ? <p>{homePage.projectsSection.sectionIntro}</p> : null}
+          <MotionReveal>
+            <div className={styles.projectsHeader}>
+              <div>
+                <h2>{homePage.projectsSection.sectionTitle}</h2>
+                {homePage.projectsSection.sectionIntro ? <p>{homePage.projectsSection.sectionIntro}</p> : null}
+              </div>
+
+              {viewAllLink.href ? (
+                <a className={styles.viewAllLink} href={viewAllLink.href} rel={viewAllLink.rel} target={viewAllLink.target}>
+                  {homePage.projectsSection.viewAllLink?.label || 'Xem tất cả'}
+                  <ExternalLink size={16} />
+                </a>
+              ) : null}
             </div>
+          </MotionReveal>
 
-            {viewAllLink.href ? (
-              <a className={styles.viewAllLink} href={viewAllLink.href} rel={viewAllLink.rel} target={viewAllLink.target}>
-                {homePage.projectsSection.viewAllLink?.label || 'Xem tất cả'}
-                <ExternalLink size={16} />
-              </a>
-            ) : null}
-          </div>
-
-          <div className={styles.projectsGrid}>
+          <MotionStagger className={styles.projectsGrid} delayChildren={0.06} staggerChildren={0.08}>
             {projects.map((project) => {
               const projectLink = resolveLinkTarget({
                 linkType: project.buttonUrl ? 'custom' : undefined,
                 openInNewTab: project.openInNewTab,
                 url: project.buttonUrl,
               })
+              const projectButtonLabel = project.buttonLabel || 'Xem chi tiết'
 
               return (
-                <article className={styles.projectCard} key={project.id}>
-                  <div className={styles.projectVisual}>
-                    <VisualIcon
-                      className={styles.projectIcon}
-                      fallbackIcon="briefcase"
-                      iconName={project.iconName}
-                      image={project.previewImage}
-                      imageClassName={styles.projectImage}
-                      label={project.title}
-                      svgCode={project.svgCode}
-                      type={project.visualType}
-                    />
-                  </div>
+                <MotionStaggerItem hover="card" key={project.id}>
+                  <article className={styles.projectCard}>
+                    <div className={styles.projectVisual}>
+                      <VisualIcon
+                        className={styles.projectIcon}
+                        fallbackIcon="briefcase"
+                        iconName={project.iconName}
+                        image={project.previewImage}
+                        imageClassName={styles.projectImage}
+                        label={project.title}
+                        svgCode={project.svgCode}
+                        type={project.visualType}
+                      />
+                    </div>
 
-                  <div className={styles.projectBody}>
-                    {project.tags?.length ? (
-                      <div className={styles.projectTags}>
-                        {project.tags.map((tag, index) => (
-                          <span className={styles.projectTag} key={`${tag.tag}-${index}`}>
-                            {tag.tag}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
+                    <div className={styles.projectBody}>
+                      {project.tags?.length ? (
+                        <div className={styles.projectTags}>
+                          {project.tags.map((tag, index) => (
+                            <span className={styles.projectTag} key={`${tag.tag}-${index}`}>
+                              {tag.tag}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
 
-                    <h3>{project.title}</h3>
-                    <p>{project.shortDescription}</p>
+                      <h3>{project.title}</h3>
+                      <p>{project.shortDescription}</p>
 
-                    {projectLink.href ? (
-                      <a className={styles.projectLink} href={projectLink.href} rel={projectLink.rel} target={projectLink.target}>
-                        {project.buttonLabel || 'Xem chi tiết'}
-                        <ExternalLink size={14} />
-                      </a>
-                    ) : project.buttonLabel ? (
-                      <span className={`${styles.projectLink} ${styles.projectLinkInactive}`}>
-                        {project.buttonLabel}
-                        <ExternalLink size={14} />
-                      </span>
-                    ) : null}
-                  </div>
-                </article>
+                      {projectLink.href ? (
+                        <a className={styles.projectLink} href={projectLink.href} rel={projectLink.rel} target={projectLink.target}>
+                          {projectButtonLabel}
+                          <ExternalLink size={14} />
+                        </a>
+                      ) : (
+                        <span className={`${styles.projectLink} ${styles.projectLinkInactive}`}>
+                          {projectButtonLabel}
+                          <ExternalLink size={14} />
+                        </span>
+                      )}
+                    </div>
+                  </article>
+                </MotionStaggerItem>
               )
             })}
-          </div>
+          </MotionStagger>
         </section>
 
         <section className={styles.contactSection} id="contact">
-          <div className={styles.contactInner}>
+          <MotionReveal className={styles.contactInner}>
             <h2>{homePage.contact.sectionTitle}</h2>
             <p>{homePage.contact.description}</p>
 
             <div className={styles.contactActions}>
-              <CMSLink className={styles.contactPrimaryButton} inactiveClassName={styles.inactiveButton} link={homePage.contact.primaryCTA}>
-                <span className={styles.secondaryButtonContent}>
-                  <NamedIcon name="send" size={18} />
-                  {homePage.contact.primaryCTA?.label || 'Gửi Email Ngay'}
-                </span>
-              </CMSLink>
+              <MotionStaggerItem hover="button" inline>
+                <CMSLink className={styles.contactPrimaryButton} inactiveClassName={styles.inactiveButton} link={homePage.contact.primaryCTA}>
+                  <span className={styles.secondaryButtonContent}>
+                    <NamedIcon name="send" size={18} />
+                    {homePage.contact.primaryCTA?.label || 'Gửi Email Ngay'}
+                  </span>
+                </CMSLink>
+              </MotionStaggerItem>
 
-              <CopyButton
-                className={styles.contactSecondaryButton}
-                label={homePage.contact.secondaryCTA?.label || 'Sao chép Email'}
-                value={homePage.contact.copyValue || homePage.contact.emailAddress}
-              />
+              <MotionStaggerItem hover="button" inline>
+                <CopyButton
+                  className={styles.contactSecondaryButton}
+                  label={homePage.contact.secondaryCTA?.label || 'Sao chép Email'}
+                  value={homePage.contact.copyValue || homePage.contact.emailAddress}
+                />
+              </MotionStaggerItem>
             </div>
 
             <div className={styles.footer}>
@@ -423,27 +460,24 @@ export const PortfolioPage = ({ homePage, projects, siteSettings }: Props) => {
               {siteSettings.footer.socialLinks?.length ? (
                 <div className={styles.footerSocials}>
                   {siteSettings.footer.socialLinks.map((social, index) => (
-                    <CMSLink
-                      className={styles.footerSocialLink}
-                      inactiveClassName={styles.socialLinkInactive}
-                      key={`footer-social-${index}`}
-                      link={social}
-                    >
-                      <VisualIcon
-                        className={styles.socialIcon}
-                        fallbackIcon="link"
-                        iconName={social.iconName}
-                        image={social.iconImage}
-                        label={social.label}
-                        svgCode={social.svgCode}
-                        type={social.iconType}
-                      />
-                    </CMSLink>
+                    <MotionStaggerItem hover="chip" inline key={`footer-social-${index}`}>
+                      <CMSLink className={styles.footerSocialLink} inactiveClassName={styles.socialLinkInactive} link={social}>
+                        <VisualIcon
+                          className={styles.socialIcon}
+                          fallbackIcon="link"
+                          iconName={social.iconName}
+                          image={social.iconImage}
+                          label={social.label}
+                          svgCode={social.svgCode}
+                          type={social.iconType}
+                        />
+                      </CMSLink>
+                    </MotionStaggerItem>
                   ))}
                 </div>
               ) : null}
             </div>
-          </div>
+          </MotionReveal>
         </section>
       </main>
     </div>
