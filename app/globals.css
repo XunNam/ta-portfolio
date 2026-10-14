@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+:root {
+  --background: #edede9;
+  --foreground: #171717;
+}
+
+@theme {
+  --font-google-sans-flex: var(--font-google-sans-flex);
+  --font-dela-gothic-one: var(--font-dela-gothic-one);
+}
