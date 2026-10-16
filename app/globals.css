@@ -3,6 +3,7 @@
 :root {
   --background: #edede9;
   --foreground: #171717;
+  --navbar-background: #f5ebe0;
 }
 
 @theme {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, spring } from "motion/react";
 import Link from "next/link";
 
 export default function NavBar() {
@@ -12,16 +13,26 @@ export default function NavBar() {
   const [moMenu, setMoMenu] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full h-17 border-b border-black flex justify-between items-center bg-[#f5ebe0] text-[#171717] px-5 lg:px-30 lg:h-20">
+    <nav className="fixed top-0 left-0 z-50 w-full h-17 border-b border-black flex justify-between items-center bg-(--navbar-background) text-(--foreground) px-5 lg:px-30 lg:h-20">
       <span className="font-dela-gothic-one text-2xl">Portfolio</span>
       <div className="hidden lg:flex">
         {lienKetNavBar.map((chiMuc) => (
           <Link
             key={chiMuc.lienKet}
             href={chiMuc.lienKet}
-            className="px-2 text-md font-semibold lg:px-5 lg:text-xl"
+            className="group px-2 text-md font-semibold lg:px-5 lg:text-xl"
           >
-            {chiMuc.tenHienThi}
+            <motion.span
+              className="relative inline-block"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: spring, damping: 25, stiffness: 400 }}
+            >
+              {chiMuc.tenHienThi}
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1 left-0 h-0.5 w-full bg-linear-to-r from-purple-500 to-pink-500 scale-x-0 origin-left group-hover:scale-x-100 ease-in-out duration-200"
+              ></span>
+            </motion.span>
           </Link>
         ))}
       </div>
@@ -58,7 +69,7 @@ export default function NavBar() {
             <Link
               key={chiMuc.lienKet}
               href={chiMuc.lienKet}
-              className="px-2 text-md font-semibold py-1"
+              className="px-2 text-md font-semibold py-1 my-2"
               onClick={() => setMoMenu(!moMenu)}
             >
               {chiMuc.tenHienThi}
