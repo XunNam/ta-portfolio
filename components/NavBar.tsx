@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion, spring, useScroll, useMotionValueEvent } from "motion/react";
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import Link from "next/link";
 
 export default function NavBar() {
@@ -49,8 +49,8 @@ export default function NavBar() {
           >
             <motion.span
               className="relative inline-block"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: spring, damping: 25, stiffness: 400 }}
+              whileHover={{ scale: 1.15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 400 }}
             >
               {chiMuc.tenHienThi}
               <span
