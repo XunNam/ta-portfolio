@@ -8,7 +8,7 @@ export default function NavBar() {
   const lienKetNavBar = [
     { tenHienThi: "Trang chủ", lienKet: "/" },
     { tenHienThi: "Giới thiệu", lienKet: "/gioi-thieu" },
-    { tenHienThi: "Test Page", lienKet: "/tets-page"},
+    { tenHienThi: "Test Page", lienKet: "/test-page"},
   ];
 
   const [moMenu, setMoMenu] = useState(false);

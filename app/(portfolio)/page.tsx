@@ -3,7 +3,7 @@ import BasicInfo from "./_components/BasicInfo";
 
 export default function Home() {
   return (
-    <div className="bg-(--background) text-(--foreground) w-full pt-32 px-6">
+    <div className="bg-(--background) text-(--foreground) w-full pt-42 pb-35 px-6">
       {/* Hero Section */}
       <section>
         <HeroSection />
