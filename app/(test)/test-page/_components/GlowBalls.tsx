@@ -2,20 +2,46 @@
 import { motion } from "motion/react";
 
 export default function GlowBalls() {
-    return(
-        <div>
-            <motion.div className="h-20 w-20 bg-blue-200 rounded-full absolute top-70 left-20 z-1 blur-3xl"
-            initial={{ scale: 1 }}
-            animate={{ scale:3 }}
-            transition={{ type: "spring", repeat: Infinity, repeatType: "reverse", duration: 10 }}></motion.div>
-            <motion.div className="h-20 w-20 bg-purple-200 rounded-full absolute top-140 left-50 z-1 blur-3xl"
-            initial={{ scale: 1 }}
-            animate={{ scale:3 }}
-            transition={{ type: "tween", repeat: Infinity, repeatType: "reverse", duration: 20, delay: 2 }}></motion.div>
-            <motion.div className="h-20 w-20 bg-red-200 rounded-full absolute top-60 right-30 z-1 blur-3xl"
-            initial={{ scale: 1 }}
-            animate={{ scale:3 }}
-            transition={{ type: "tween", repeat: Infinity, repeatType: "reverse", duration: 15, delay: 4 }}></motion.div>
-        </div>
-    );
+  const glowBalls = [
+    {
+      id: "blue",
+      position: "top-50 left-30",
+      gradient: "from-blue-300/70 via-blue-300/40",
+      size: "size-64",
+      duration: 10,
+      delay: 1,
+    },
+    {
+      id: "purple",
+      position: "top-60 left-70",
+      gradient: "from-purple-300/70 via-purple-300/40",
+      size: "size-64",
+      duration: 10,
+      delay: 0,
+    },
+  ];
+
+  return (
+    <div>
+      {glowBalls.map((quaBong) => (
+        <motion.div
+          key={quaBong.id}
+          className={`${quaBong.size} ${quaBong.gradient} bg-radial absolute ${quaBong.position} via-30% to-70% to-transparent`}
+          initial={{ scale: 1, opacity: 0.4 }}
+          animate={{
+            scale: [1, 1.5, 1],
+            opacity: [0.2, 0.6, 0.2],
+          }}
+          transition={{
+            type: "tween",
+            duration: quaBong.duration,
+            delay: quaBong.delay,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+        ></motion.div>
+      ))}
+    </div>
+  );
 }

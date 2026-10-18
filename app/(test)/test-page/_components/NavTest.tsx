@@ -14,7 +14,7 @@ export default function NavTest() {
   const { scrollY } = useScroll();
   const viTriCuoiCung = useRef(0);
 
-  useMotionValueEvent(scrollY, "change", ((viTriHienTai) => {
+  useMotionValueEvent(scrollY, "change", (viTriHienTai) => {
     const viTriMoi = Math.max(0, viTriHienTai)
     const chenhLech = viTriMoi - viTriCuoiCung.current
 
@@ -30,12 +30,12 @@ export default function NavTest() {
 
     setNavBarThuGon(chenhLech > 0);
     viTriCuoiCung.current = viTriHienTai;
-  }));
+  });
 
   return (
     <div className={` ${navBarThuGon ? "h-15 px-5" : "h-27 px-17"} w-full bg-yellow-100 flex justify-between items-center  fixed top-0 left-0 transition-all duration-200 ease-in-out z-51`}>
       {/* Logo chính */}
-      <h1 className={`font-dela-gothic-one text-2xl ${navBarThuGon ? "text-lg" : "text-3xl"} transition-all duration-200 ease-in-out`}>Logo</h1>
+      <a key={"Logo"} href={"https://buitheanh.dev"} className={`font-dela-gothic-one text-2xl ${navBarThuGon ? "text-lg" : "text-3xl"} transition-all duration-200 ease-in-out`}>Logo</a>
 
       {/* Danh sách liên kết máy tính */}
       <div>
