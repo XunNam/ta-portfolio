@@ -4,6 +4,8 @@ import { Google_Sans_Flex } from "next/font/google";
 import { Dela_Gothic_One } from "next/font/google";
 import { Nunito } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +47,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="vi"
       className={`${geistSans.variable} ${geistMono.variable} ${googleSansFlex.variable} ${delaGothicOne.variable} ${nunito.variable} h-full antialiased`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }
