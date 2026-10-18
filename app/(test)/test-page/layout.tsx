@@ -1,4 +1,4 @@
-import Nav from "./_components/Nav";
+import NavTesst from "./_components/NavTest";
 
 export default function TestPageLayout({
   children,
@@ -8,7 +8,7 @@ export default function TestPageLayout({
   return (
     <>
       <nav>
-        <Nav />
+        <NavTesst />
       </nav>
       {children}
     </>
