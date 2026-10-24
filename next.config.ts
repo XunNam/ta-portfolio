@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     agentFeedback: true,
+    agentUpgrade: "security",
   },
   allowedDevOrigins: ["theanh-g614", "100.81.176.64"],
   cacheComponents: true,
