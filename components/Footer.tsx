@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <div className="h-90 w-full bg-[#6b705c] flex flex-col items-center justify-around py-15 pb-30 whitespace-pre-wrap lg:flex-row lg:justify-evenly lg:items-center">
+    <div className="h-90 w-full bg-[#6b705c] flex flex-col items-center justify-around px-4 py-15 pb-20 whitespace-pre-wrap lg:flex-row lg:justify-evenly lg:items-center">
       <h1 className="text-[#ffe8d6] font-dela-gothic-one text-3xl my-5">
         HẾT ÙI :(((
       </h1>
